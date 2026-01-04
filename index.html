@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>FAQ Chatbot</title>
+
+  <style>
+  :root {
+    --bg-main: radial-gradient(1200px 600px at top, #1b2a6b 0%, #050814 60%);
+    --panel-bg: rgba(10, 18, 45, 0.88);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --text-primary: #e6ecff;
+    --text-secondary: #9aa7d1;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --pill-bg: rgba(255, 255, 255, 0.08);
+    --input-bg: rgba(255, 255, 255, 0.06);
+    --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg-main);
+    margin: 0;
+    padding: 0;
+    color: var(--text-primary);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+  }
+
+ .top-header {
+  width: 100%;
+  padding: 18px 16px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.02)
+  );
+  border-bottom: 1px solid var(--panel-border);
+  box-shadow: var(--shadow-soft);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 13px;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  letter-spacing: 0.4px;
+}
+
+
+  .chat {
+    flex: 1;
+    padding: 18px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .message {
+    max-width: 72%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    line-height: 1.45;
+    font-size: 14px;
+    white-space: pre-wrap;
+  }
+  .message {
+  position: relative;
+  padding-left: 58px; /* more space for larger icon */
+}
+.message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;   /* ⭐ KEY FIX */
+  word-break: break-word;    /* fallback */
+}
+
+
+.message::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+}
+
+
+
+
+  .user {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border-bottom-left-radius: 6px;
+  }
+  .user::before {
+  content: "👤";
+  position: absolute;
+  left: 14px;
+  top: 8px;            /* ⬅ top aligned */
+  transform: none;      /* ⬅ remove centering */
+
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.83)
+  );
+  color: #ffffff;
+  border: 1px solid rgba(237, 228, 228, 0.78);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+
+
+
+  .bot {
+    align-self: flex-end;
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25),
+      rgba(59, 130, 246, 0.12)
+    );
+    color: var(--text-primary);
+    border-bottom-right-radius: 6px;
+  }
+  .bot::before {
+  content: "🤖";
+  position: absolute;
+  left: 14px;
+  top: 8px;              /* ⬅ top-aligned */
+  transform: none;        /* ⬅ remove vertical centering */
+
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb
+  );
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+}
+
+
+
+  /* FAQ pills */
+  .faq-container {
+    text-align: center;
+    margin: 8px 0 4px;
+  }
+  /* Custom scrollbar for chat */
+.chat::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(59, 130, 246, 0.7),
+    rgba(59, 130, 246, 0.4)
+  );
+  border-radius: 8px;
+}
+
+.chat::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.9);
+}
+.chat {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.6) rgba(255, 255, 255, 0.05);
+}
+
+
+  .faq-title {
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .faq-item {
+    display: inline-block;
+    background: var(--pill-bg);
+    border: 1px solid var(--panel-border);
+    padding: 8px 16px;
+    margin: 4px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+  }
+
+  .faq-item:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  .input-area {
+    display: flex;
+    padding: 14px;
+    margin-top: 14px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .input-area input {
+    flex: 1;
+    padding: 12px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid var(--panel-border);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    outline: none;
+  }
+
+  .input-area input::placeholder {
+    color: var(--text-secondary);
+  }
+
+  .input-area button {
+    margin-left: 10px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(
+      135deg,
+      var(--accent),
+      var(--accent-hover)
+    );
+    color: white;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.35);
+  }
+/* Hide bot icon for typing indicator */
+.message.bot.typing-bubble::before {
+  display: none;
+}
+/* Remove avatar spacing for typing indicator */
+.message.bot.typing-bubble {
+  padding-left: 16px;
+}
+
+
+  .input-area button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 26px rgba(59, 130, 246, 0.45);
+  }
+
+  
+  /* Bot typing indicator */
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.typing span {
+  width: 6px;
+  height: 10px;
+  background: #e6ecff;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: blink 1.4s infinite both;
+}
+
+.typing span:nth-child(1) { animation-delay: 0s; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+</style>
+
+</head>
+
+<body>
+<div class="container">
+  <header class="top-header">
+  <div class="header-inner">
+    <div class="title">FAQ Chatbot</div>
+    <div class="subtitle">Ask questions and get instant answers</div>
+  </div>
+</header>
+
+
+  <div id="chat" class="chat"></div>
+
+  <div class="input-area">
+    <input id="question" type="text" placeholder="Ask your question..." />
+    <button onclick="ask()">Send</button>
+  </div>
+</div>
+
+<script>
+const API_BASE = "http://localhost:8000";
+const STORAGE_KEY = "faq_session_id";
+let typingBubble = null;
+
+let session_id = localStorage.getItem(STORAGE_KEY);
+if (!session_id) {
+  session_id = crypto.randomUUID();
+  localStorage.setItem(STORAGE_KEY, session_id);
+}
+
+const chat = document.getElementById("chat");
+const questionInput = document.getElementById("question");
+
+questionInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") ask();
+});
+
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = `message ${type}`;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showFaqs(matches) {
+  if (!matches || matches.length === 0) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "faq-container";
+
+  const title = document.createElement("div");
+  title.className = "faq-title";
+  title.textContent = "Related FAQs";
+  wrapper.appendChild(title);
+
+  matches.forEach(m => {
+    const pill = document.createElement("div");
+    pill.className = "faq-item";
+    pill.textContent = m.question;
+    pill.onclick = () => askFaq(m.question, true);
+    wrapper.appendChild(pill);
+  });
+
+  chat.appendChild(wrapper);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function ask() {
+  const q = questionInput.value.trim();
+  if (!q) return;
+
+  addMessage(q, "user");
+  questionInput.value = "";
+  showBotTyping();
+
+
+  await sendQuestion(q);
+}
+
+async function askFaq(questionText, fromFaq = false) {
+  addMessage(questionText, "user");
+
+  showBotTyping();
+
+  await sendQuestion(questionText, fromFaq);
+}
+
+
+function showBotTyping() {
+  if (typingBubble) return;   // ⬅ ADD THIS GUARD
+  typingBubble = document.createElement("div");
+typingBubble.className = "message bot typing-bubble";
+
+
+  const typing = document.createElement("div");
+  typing.className = "typing";
+  typing.innerHTML = "<span></span><span></span><span></span>";
+
+  typingBubble.appendChild(typing);
+  chat.appendChild(typingBubble);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeBotTyping() {
+  if (typingBubble) {
+    typingBubble.remove();
+    typingBubble = null;
+  }
+}
+async function sendQuestion(questionText, fromFaq = false) {
+
+  try {
+    const res = await fetch(`${API_BASE}/ask`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+  session_id,
+  question: questionText,
+  from_faq: fromFaq
+})
+
+    });
+
+    const data = await res.json();
+
+    session_id = data.session_id;
+    localStorage.setItem(STORAGE_KEY, session_id);
+    removeBotTyping();
+    showFaqs(data.top_matches);
+    addMessage(data.generated_answer, "bot");
+    
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+</script>
+</body>
+</html>
+

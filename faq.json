@@ -1,0 +1,298 @@
+[
+  {
+    "question": "How do I apply for leave?",
+    "answer": "Leave must be applied through the HR portal and approved by your manager."
+  },
+  {
+    "question": "What types of leave am I entitled to?",
+    "answer": "Earned leave, casual leave, sick leave, maternity/paternity leave, and statutory leaves as per policy."
+  },
+  {
+    "question": "What is the process for sick leave?",
+    "answer": "Sick leave should be applied in the system, and a medical certificate may be required."
+  },
+  {
+    "question": "How do I apply for maternity/paternity leave?",
+    "answer": "Requests must be submitted to HR with supporting documents as per statutory policy."
+  },
+  {
+    "question": "Can I take leave during my notice period?",
+    "answer": "Leave during notice period is subject to manager and HR approval."
+  },
+  {
+    "question": "Can unused leave be carried forward or encashed?",
+    "answer": "Carry-forward and encashment depend on company policy."
+  },
+  {
+    "question": "Where can I access the holiday calendar?",
+    "answer": "The holiday calendar is available on the HR portal and shared via email."
+  },
+  {
+    "question": "What is the process for compensatory off?",
+    "answer": "Comp-off must be applied in the system after manager approval for extra working days."
+  },
+  {
+    "question": "When is salary credited?",
+    "answer": "Salary is credited monthly as per the payroll cycle."
+  },
+  {
+    "question": "Where can I download my payslips?",
+    "answer": "Payslips can be accessed through the payroll or HR portal."
+  },
+  {
+    "question": "How do I raise a payroll or reimbursement query?",
+    "answer": "Queries should be raised through the HR helpdesk or ticketing system."
+  },
+  {
+    "question": "Who should I contact for payroll discrepancies?",
+    "answer": "Contact the Payroll or HR team via official email or helpdesk."
+  },
+  {
+    "question": "How and when will incentives/bonuses be paid?",
+    "answer": "Incentives and bonuses are paid as per company performance and policy timelines."
+  },
+  {
+    "question": "How is my salary structured?",
+    "answer": "Salary structure is provided in your CTC breakup and appointment letter."
+  },
+  {
+    "question": "What is the process for salary revisions?",
+    "answer": "Salary revisions follow the annual appraisal cycle and business approvals."
+  },
+  {
+    "question": "How can I declare my investments for tax-saving?",
+    "answer": "Investment declarations must be submitted through the payroll portal before the deadline."
+  },
+  {
+    "question": "When will Form 16 be issued?",
+    "answer": "Form 16 is issued annually after the end of the financial year."
+  },
+  {
+    "question": "How do I check my PF balance?",
+    "answer": "You can check your PF balance using the EPFO website or mobile app."
+  },
+  {
+    "question": "What is my UAN?",
+    "answer": "Your Universal Account Number is generated during PF enrollment and shared by HR."
+  },
+  {
+    "question": "How can I update my PF nominee details?",
+    "answer": "Nominee details can be updated through the EPFO portal."
+  },
+  {
+    "question": "Am I covered under ESI?",
+    "answer": "ESI coverage is based on salary eligibility as per government norms."
+  },
+  {
+    "question": "When am I eligible for gratuity?",
+    "answer": "Gratuity is applicable after completing 5 years of continuous service."
+  },
+  {
+    "question": "What medical insurance coverage is provided?",
+    "answer": "Group medical insurance is provided as per company policy."
+  },
+  {
+    "question": "How do I add or remove dependents from insurance?",
+    "answer": "Dependent changes can be made during the open enrollment window or through HR."
+  },
+  {
+    "question": "What is the insurance claim process?",
+    "answer": "Claims can be raised through the insurance portal or the third-party administrator."
+  },
+  {
+    "question": "Is group personal accident insurance provided?",
+    "answer": "Yes, group personal accident insurance is available as per policy."
+  },
+  {
+    "question": "What wellness benefits are available?",
+    "answer": "Wellness benefits may include health check-ups, counseling, and fitness programs."
+  },
+  {
+    "question": "Is POSH training mandatory every year?",
+    "answer": "Yes, POSH training is mandatory for all employees annually."
+  },
+  {
+    "question": "Who are the POSH Internal Committee members?",
+    "answer": "The list of IC members is available on the HR portal and office notice boards."
+  },
+  {
+    "question": "How do I raise a POSH complaint confidentially?",
+    "answer": "Complaints can be raised via email to the Internal Committee or other official channels."
+  },
+  {
+    "question": "What is the disciplinary process?",
+    "answer": "Misconduct is handled as per the disciplinary policy with proper investigation."
+  },
+  {
+    "question": "What is the policy on conflict of interest?",
+    "answer": "Employees must disclose any potential conflicts to HR or management."
+  },
+  {
+    "question": "What is the whistleblower policy?",
+    "answer": "Employees can confidentially report unethical practices without fear of retaliation."
+  },
+  {
+    "question": "How often are performance appraisals conducted?",
+    "answer": "Performance appraisals are conducted annually or as per business needs."
+  },
+  {
+    "question": "What are the promotion eligibility criteria?",
+    "answer": "Promotions are based on performance, business need, and managerial approval."
+  },
+  {
+    "question": "How are performance ratings calculated?",
+    "answer": "Ratings are based on goals, competencies, and manager evaluations."
+  },
+  {
+    "question": "Is internal job posting (IJP) available?",
+    "answer": "Yes, eligible employees can apply for internal job postings."
+  },
+  {
+    "question": "How can I apply for internal transfers?",
+    "answer": "You can apply through the IJP portal or discuss with HR."
+  },
+  {
+    "question": "Are leadership or high-potential programs available?",
+    "answer": "Yes, based on eligibility and business nominations."
+  },
+  {
+    "question": "What learning platforms are available?",
+    "answer": "Training is available through the company's Learning Management System (LMS)."
+  },
+  {
+    "question": "Are technical and soft skill trainings provided?",
+    "answer": "Yes, based on role requirements and development needs."
+  },
+  {
+    "question": "Which trainings are mandatory?",
+    "answer": "Mandatory trainings include compliance, POSH, and data security."
+  },
+  {
+    "question": "How do I enroll in training programs?",
+    "answer": "You can enroll via the LMS or through HR nominations."
+  },
+  {
+    "question": "Are external certifications reimbursed?",
+    "answer": "Yes, with prior HR and manager approval."
+  },
+  {
+    "question": "How do I raise an IT support ticket?",
+    "answer": "Via the IT helpdesk portal or official support email."
+  },
+  {
+    "question": "What is the policy for company laptop and assets?",
+    "answer": "Assets must be used for official purposes and returned during exit."
+  },
+  {
+    "question": "Can I install personal software on office devices?",
+    "answer": "No, only IT-approved software may be installed."
+  },
+  {
+    "question": "What is the email and data security policy?",
+    "answer": "Employees must protect confidential data and follow cyber security guidelines."
+  },
+  {
+    "question": "What is the policy for loss or damage of company assets?",
+    "answer": "Loss or damage must be reported immediately; cost recovery may apply."
+  },
+  {
+    "question": "What is the official travel policy?",
+    "answer": "Official travel must be pre-approved and follow company guidelines."
+  },
+  {
+    "question": "How do I book official travel?",
+    "answer": "Bookings must be made through the company travel desk or approved portal."
+  },
+  {
+    "question": "What expenses are reimbursable?",
+    "answer": "Only business-related expenses allowed by policy are reimbursable."
+  },
+  {
+    "question": "What is the TAT for reimbursement processing?",
+    "answer": "Reimbursements are processed within the defined payroll cycle."
+  },
+  {
+    "question": "What documents are required for reimbursement claims?",
+    "answer": "Original bills, receipts, and approvals are mandatory for reimbursement."
+  },
+  {
+    "question": "What is my notice period?",
+    "answer": "Your notice period is stated in your appointment letter."
+  },
+  {
+    "question": "How do I submit my resignation?",
+    "answer": "Resignation must be submitted through the HR portal or email."
+  },
+  {
+    "question": "Can notice period be waived or bought out?",
+    "answer": "Yes, subject to HR and management approval."
+  },
+  {
+    "question": "What is the exit clearance process?",
+    "answer": "All assets and dues must be cleared through the exit checklist."
+  },
+  {
+    "question": "When will I receive my full and final settlement?",
+    "answer": "Full and final settlement is processed after your last working day, within statutory timelines."
+  },
+  {
+    "question": "How do I collect my experience and relieving letters?",
+    "answer": "These documents are issued after completing exit formalities."
+  },
+  {
+    "question": "What happens to my benefits after exit?",
+    "answer": "Insurance and benefits cease as per policy from your last working day."
+  },
+  {
+    "question": "How do I update my personal details?",
+    "answer": "Personal details can be updated on the HR portal."
+  },
+  {
+    "question": "How do I update my bank account details?",
+    "answer": "Bank details must be updated through the payroll system with supporting documents."
+  },
+  {
+    "question": "How can I request an employment or salary certificate?",
+    "answer": "Requests can be raised through the HR helpdesk or email."
+  },
+  {
+    "question": "How do I correct errors in my personal records?",
+    "answer": "Submit a request with supporting documents to HR."
+  },
+  {
+    "question": "What are the office entry and access card rules?",
+    "answer": "Access cards are mandatory and must not be shared."
+  },
+  {
+    "question": "What are the health and safety guidelines at the workplace?",
+    "answer": "Employees must follow safety protocols and emergency instructions."
+  },
+  {
+    "question": "Who should I contact in case of a medical or safety emergency?",
+    "answer": "Contact Security, Facilities, HR, or the emergency response team."
+  },
+  {
+    "question": "What is the policy on office visitors?",
+    "answer": "Visitors must be pre-approved and registered at the reception."
+  },
+  {
+    "question": "Are cafeteria and transport facilities provided?",
+    "answer": "Facilities depend on office location and company policy."
+  },
+  {
+    "question": "What are the HR helpdesk working hours?",
+    "answer": "HR helpdesk operates during standard business working hours."
+  },
+  {
+    "question": "What is the escalation matrix for unresolved HR issues?",
+    "answer": "Issues may be escalated to the HR Manager or HR Head."
+  },
+  {
+    "question": "How long does HR take to close a query?",
+    "answer": "Standard turnaround time is 24–48 working hours."
+  },
+  {
+    "question": "How will HR policy updates be communicated?",
+    "answer": "Updates are shared through official emails, the HR portal, or town halls."
+  }
+]

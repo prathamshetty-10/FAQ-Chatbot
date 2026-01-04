@@ -1,0 +1,4 @@
+ uvicorn server:app --reload --port 8000
+ to run server
+  after each change docker build -t faq-chatbot .
+to run server docker run -p 8000:8000 faq-chatbot
