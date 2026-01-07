@@ -95,12 +95,12 @@
   }
   .message {
   position: relative;
-  padding-left: 58px; /* more space for larger icon */
+  padding-left: 58px;
 }
 .message {
   white-space: pre-wrap;
-  overflow-wrap: anywhere;   /* ⭐ KEY FIX */
-  word-break: break-word;    /* fallback */
+  overflow-wrap: anywhere;
+  word-break: break-word;    
 }
 
 
@@ -134,8 +134,8 @@
   content: "👤";
   position: absolute;
   left: 14px;
-  top: 8px;            /* ⬅ top aligned */
-  transform: none;      /* ⬅ remove centering */
+  top: 8px;          
+  transform: none;     
 
   width: 32px;
   height: 32px;
@@ -173,8 +173,8 @@
   content: "🤖";
   position: absolute;
   left: 14px;
-  top: 8px;              /* ⬅ top-aligned */
-  transform: none;        /* ⬅ remove vertical centering */
+  top: 8px;              
+  transform: none;    
 
   width: 32px;
   height: 32px;
@@ -194,15 +194,10 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
 }
-
-
-
-  /* FAQ pills */
   .faq-container {
     text-align: center;
     margin: 8px 0 4px;
   }
-  /* Custom scrollbar for chat */
 .chat::-webkit-scrollbar {
   width: 8px;
 }
@@ -298,11 +293,9 @@
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     box-shadow: 0 10px 20px rgba(59, 130, 246, 0.35);
   }
-/* Hide bot icon for typing indicator */
 .message.bot.typing-bubble::before {
   display: none;
 }
-/* Remove avatar spacing for typing indicator */
 .message.bot.typing-bubble {
   padding-left: 16px;
 }
@@ -313,8 +306,6 @@
     box-shadow: 0 14px 26px rgba(59, 130, 246, 0.45);
   }
 
-  
-  /* Bot typing indicator */
 .typing {
   display: flex;
   align-items: center;
@@ -433,7 +424,7 @@ async function askFaq(questionText, fromFaq = false) {
 
 
 function showBotTyping() {
-  if (typingBubble) return;   // ⬅ ADD THIS GUARD
+  if (typingBubble) return;  
   typingBubble = document.createElement("div");
 typingBubble.className = "message bot typing-bubble";
 

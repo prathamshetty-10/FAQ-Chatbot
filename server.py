@@ -6,6 +6,7 @@ from typing import Optional, List
 
 import numpy as np
 import requests
+import torch
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,9 +14,9 @@ from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# -------------------------------
-# Load env
-# -------------------------------
+# --------------------------------------------------
+# Environment
+# --------------------------------------------------
 load_dotenv()
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -23,32 +24,26 @@ OPENROUTER_MODEL = os.getenv(
     "OPENROUTER_MODEL",
     "meta-llama/llama-3.2-3b-instruct:free"
 )
-
-# -------------------------------
-# Load model + vector store
-# -------------------------------
-model = SentenceTransformer("all-MiniLM-L6-v2")
-
-with open("vector_store.pkl", "rb") as f:
-    questions, embeddings, faq = pickle.load(f)
-
-embeddings = np.array(embeddings)
-
-# -------------------------------
-# App
-# -------------------------------
+# --------------------------------------------------
+# FastAPI app
+# --------------------------------------------------
 app = FastAPI(title="FAQ Chatbot API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # tighten in prod
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# -------------------------------
-# In-memory sessions
-# -------------------------------
+# --------------------------------------------------
+# Globals
+# --------------------------------------------------
+model = None
+questions = None
+embeddings = None
+faq = None
+
 SESSIONS = {}
 # session_id -> {
 #   last_user_question,
@@ -56,9 +51,34 @@ SESSIONS = {}
 #   last_faq_matches
 # }
 
-# -------------------------------
-# Schemas
-# -------------------------------
+# --------------------------------------------------
+# Startup: load model + vector store ONCE
+# --------------------------------------------------
+@app.on_event("startup")
+def startup():
+    global model, questions, embeddings, faq
+
+    # Torch safety for Docker
+    torch.set_num_threads(1)
+    torch.set_num_interop_threads(1)
+
+    # Load SentenceTransformer (runtime, not build-time)
+    model = SentenceTransformer(
+        "all-MiniLM-L6-v2",
+        cache_folder="/app/hf_cache"
+    )
+    print("✅ SentenceTransformer model loaded")
+
+    # Load vector store
+    with open("vector_store.pkl", "rb") as f:
+        questions, emb, faq = pickle.load(f)
+
+    embeddings = np.array(emb)
+    print("✅ Vector store loaded")
+
+# --------------------------------------------------
+# Request / Response models
+# --------------------------------------------------
 class AskRequest(BaseModel):
     session_id: Optional[str] = None
     question: str
@@ -71,15 +91,16 @@ class MatchItem(BaseModel):
     answer: str
     score: float
 
+
 class AskResponse(BaseModel):
     session_id: str
     top_matches: List[MatchItem]
     generated_answer: str
     is_follow_up: bool
 
-# -------------------------------
-# LLM call
-# -------------------------------
+# --------------------------------------------------
+# LLM call (OpenRouter)
+# --------------------------------------------------
 def query_llm(prompt: str, max_tokens=250, retries=3, wait=5):
     if not OPENROUTER_API_KEY:
         return None
@@ -112,9 +133,9 @@ def query_llm(prompt: str, max_tokens=250, retries=3, wait=5):
 
     return None
 
-# -------------------------------
-# Retrieval
-# -------------------------------
+# --------------------------------------------------
+# FAQ retrieval
+# --------------------------------------------------
 def retrieve_faq_matches(question: str, top_k: int):
     q_emb = model.encode([question])
     scores = cosine_similarity(q_emb, embeddings)[0]
@@ -132,9 +153,9 @@ def retrieve_faq_matches(question: str, top_k: int):
     max_score = matches[0]["score"] if matches else 0.0
     return matches, max_score
 
-# -------------------------------
+# --------------------------------------------------
 # Follow-up detection
-# -------------------------------
+# --------------------------------------------------
 FOLLOWUP_KEYWORDS = [
     "what about", "how about", "and", "also",
     "that", "it", "then", "why", "how long", "more"
@@ -145,7 +166,6 @@ def is_follow_up(new_q: str, old_q: Optional[str]) -> bool:
         return False
 
     short = len(new_q.split()) <= 4 and "?" in new_q
-
     keyword_hit = any(k in new_q.lower() for k in FOLLOWUP_KEYWORDS)
 
     sim = cosine_similarity(
@@ -154,30 +174,32 @@ def is_follow_up(new_q: str, old_q: Optional[str]) -> bool:
     )[0][0]
 
     return short or keyword_hit or sim > 0.55
+
+# --------------------------------------------------
+# Utilities
+# --------------------------------------------------
 def safe_answer(text: Optional[str], fallback: str) -> str:
     return text if isinstance(text, str) and text.strip() else fallback
 
-# -------------------------------
-# FAQ relevance threshold
-# -------------------------------
 FAQ_RELEVANCE_THRESHOLD = 0.45
 
-# -------------------------------
-# Core pipeline (ONE FLOW)
-# -------------------------------
+# --------------------------------------------------
+# Core logic
+# --------------------------------------------------
 def handle_question(question: str, session_id: str, top_k: int, from_faq: bool):
     session = SESSIONS.get(session_id, {
         "last_user_question": None,
         "last_generated_answer": None,
         "last_faq_matches": None
     })
-    # FAQ CLICK → elaborate ONLY the selected FAQ
+
+    # Clicked FAQ follow-up
     if from_faq and session.get("last_faq_matches"):
         clicked = question.strip().lower()
 
         matched_faq = next(
             (m for m in session["last_faq_matches"]
-            if m["question"].strip().lower() == clicked),
+             if m["question"].strip().lower() == clicked),
             None
         )
 
@@ -186,17 +208,16 @@ def handle_question(question: str, session_id: str, top_k: int, from_faq: bool):
             if matched_faq
             else session["last_faq_matches"][0]["answer"]
         )
-        
+
         prompt = (
             "You are an HR FAQ assistant.\n\n"
             f"FAQ question:\n{question}\n\n"
             f"FAQ answer:\n{base_answer}\n\n"
-            "Task: Provide a more detailed, clear, and user-friendly explanation of this FAQ. "
-            "Do not introduce new topics or other FAQs. Stay strictly within this question."
+            "Task: Provide a more detailed, clear, and user-friendly explanation. "
+            "Do not introduce new topics."
         )
 
         answer = safe_answer(query_llm(prompt), base_answer)
-
 
         session["last_user_question"] = question
         session["last_generated_answer"] = answer
@@ -204,15 +225,13 @@ def handle_question(question: str, session_id: str, top_k: int, from_faq: bool):
 
         return session_id, [], answer, False
 
-
-    # FOLLOW-UP
+    # Follow-up question
     if is_follow_up(question, session["last_user_question"]):
         prompt = (
             "This is a follow-up question.\n\n"
             f"Previous answer:\n{session['last_generated_answer']}\n\n"
             f"User follow-up:\n{question}\n\n"
-            "Based on these, provide a clear, user-friendly, slightly more detailed explanation, "
-            "but keep it concise and easy to read."
+            "Provide a clear, concise, user-friendly answer."
         )
 
         answer = safe_answer(query_llm(prompt), session["last_generated_answer"] or "")
@@ -223,26 +242,25 @@ def handle_question(question: str, session_id: str, top_k: int, from_faq: bool):
 
         return session_id, session["last_faq_matches"], answer, True
 
-    # NORMAL QUESTION
-    matches, max_score = retrieve_faq_matches(question, top_k)
-
-   
+    # New question
+    matches, _ = retrieve_faq_matches(question, top_k)
 
     context = ""
     for m in matches:
         context += f"Q: {m['question']}\nA: {m['answer']}\n\n"
+
     prompt = (
         "You are an HR FAQ assistant.\n\n"
         f"User question:\n{question}\n\n"
         f"Relevant FAQ answers:\n{context}"
-        "Task: Using the answers of the 3 provided FAQs, generate a single, clear, and user-friendly response "
-        "that directly answers the user's question. You should combine and rephrase the information from the FAQs, "
-        "but ensure the response is concise, accurate, and easy to understand."
+        "Task: Using the answers of the provided FAQs, generate a single, clear, "
+        "and user-friendly response that directly answers the user's question."
     )
 
-    fallback = matches[0]["answer"] if matches else "I'm sorry, I couldn't find an answer to that."
-    answer = safe_answer(query_llm(prompt), fallback)
+    fallback = matches[0]["answer"] if matches else \
+        "I'm sorry, I couldn't find an answer to that."
 
+    answer = safe_answer(query_llm(prompt), fallback)
 
     session["last_user_question"] = question
     session["last_generated_answer"] = answer
@@ -251,9 +269,9 @@ def handle_question(question: str, session_id: str, top_k: int, from_faq: bool):
 
     return session_id, matches, answer, False
 
-# -------------------------------
-# Single API endpoint
-# -------------------------------
+# --------------------------------------------------
+# API endpoint
+# --------------------------------------------------
 @app.post("/ask", response_model=AskResponse)
 def ask(req: AskRequest):
     if not req.question.strip():
@@ -262,12 +280,11 @@ def ask(req: AskRequest):
     session_id = req.session_id or str(uuid.uuid4())
 
     sid, matches, answer, follow = handle_question(
-    req.question.strip(),
-    session_id,
-    req.top_k,
-    req.from_faq
-)
-
+        req.question.strip(),
+        session_id,
+        req.top_k,
+        req.from_faq
+    )
 
     return AskResponse(
         session_id=sid,
