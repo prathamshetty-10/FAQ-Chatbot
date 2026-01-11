@@ -13,6 +13,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+
 
 # --------------------------------------------------
 # Environment
@@ -28,6 +31,8 @@ OPENROUTER_MODEL = os.getenv(
 # FastAPI app
 # --------------------------------------------------
 app = FastAPI(title="FAQ Chatbot API")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -272,6 +277,11 @@ def handle_question(question: str, session_id: str, top_k: int, from_faq: bool):
 # --------------------------------------------------
 # API endpoint
 # --------------------------------------------------
+@app.get("/", response_class=HTMLResponse)
+def serve_ui():
+    with open("static/index.html", "r", encoding="utf-8") as f:
+        return f.read()
+
 @app.post("/ask", response_model=AskResponse)
 def ask(req: AskRequest):
     if not req.question.strip():

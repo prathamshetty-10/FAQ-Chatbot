@@ -339,8 +339,8 @@
 <div class="container">
   <header class="top-header">
   <div class="header-inner">
-    <div class="title">FAQ Chatbot</div>
-    <div class="subtitle">Ask questions and get instant answers</div>
+    <div class="title">HR Assist</div>
+    <div class="subtitle">Instant answers to HR questions</div>
   </div>
 </header>
 
@@ -354,7 +354,7 @@
 </div>
 
 <script>
-const API_BASE = "http://localhost:3030";
+const API_BASE = "";
 const STORAGE_KEY = "faq_session_id";
 let typingBubble = null;
 
@@ -370,6 +370,32 @@ const questionInput = document.getElementById("question");
 questionInput.addEventListener("keydown", e => {
   if (e.key === "Enter") ask();
 });
+
+const STARTER_FAQS = [
+  "How do I apply for leave?",
+  "When is salary credited?",
+  "Where can I download my payslips?"
+];
+function showStarterFaqs() {
+  const wrapper = document.createElement("div");
+  wrapper.className = "faq-container";
+
+  const title = document.createElement("div");
+  title.className = "faq-title";
+  title.textContent = "Popular questions";
+  wrapper.appendChild(title);
+
+  STARTER_FAQS.forEach(q => {
+    const pill = document.createElement("div");
+    pill.className = "faq-item";
+    pill.textContent = q;
+    pill.onclick = () => askFaq(q, true);
+    wrapper.appendChild(pill);
+  });
+
+  chat.appendChild(wrapper);
+  chat.scrollTop = chat.scrollHeight;
+}
 
 function addMessage(text, type) {
   const div = document.createElement("div");
@@ -471,6 +497,8 @@ async function sendQuestion(questionText, fromFaq = false) {
     console.error(e);
   }
 }
+showStarterFaqs();
+
 </script>
 </body>
 </html>
