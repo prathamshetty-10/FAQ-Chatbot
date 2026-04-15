@@ -354,7 +354,7 @@
 </div>
 
 <script>
-const API_BASE = "";
+const API_BASE = "http://localhost:8000";
 const STORAGE_KEY = "faq_session_id";
 let typingBubble = null;
 
@@ -399,7 +399,7 @@ function showStarterFaqs() {
 
 function addMessage(text, type) {
   const div = document.createElement("div");
-  div.className = `message ${type}`;
+  div.className = `message ${type}`; //based on this classname css is applied
   div.textContent = text;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;

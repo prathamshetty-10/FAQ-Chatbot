@@ -24,14 +24,15 @@ load_dotenv()
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv(
-    "OPENROUTER_MODEL",
-    "meta-llama/llama-3.2-3b-instruct:free"
+    "OPENROUTER_MODEL"
 )
+
 # --------------------------------------------------
 # FastAPI app
 # --------------------------------------------------
 app = FastAPI(title="FAQ Chatbot API")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="public"), name="public")
 
 
 app.add_middleware(
@@ -108,6 +109,7 @@ class AskResponse(BaseModel):
 # --------------------------------------------------
 def query_llm(prompt: str, max_tokens=250, retries=3, wait=5):
     if not OPENROUTER_API_KEY:
+        print("no key")
         return None
 
     url = "https://openrouter.ai/api/v1/chat/completions"
@@ -184,7 +186,12 @@ def is_follow_up(new_q: str, old_q: Optional[str]) -> bool:
 # Utilities
 # --------------------------------------------------
 def safe_answer(text: Optional[str], fallback: str) -> str:
-    return text if isinstance(text, str) and text.strip() else fallback
+    if isinstance(text, str) and text.strip():
+        return text
+    else:
+        print("simply")
+        return fallback
+    # return text if isinstance(text, str) and text.strip() else fallback
 
 FAQ_RELEVANCE_THRESHOLD = 0.45
 
@@ -277,9 +284,18 @@ def handle_question(question: str, session_id: str, top_k: int, from_faq: bool):
 # --------------------------------------------------
 # API endpoint
 # --------------------------------------------------
-@app.get("/", response_class=HTMLResponse)
-def serve_ui():
-    with open("static/index.html", "r", encoding="utf-8") as f:
+# @app.get("/", response_class=HTMLResponse)
+# def serve_ui():
+#     with open("static/index.html", "r", encoding="utf-8") as f:
+#         return f.read()
+@app.get("/chat",response_class=HTMLResponse)
+def serve_chat():
+    with open("public/chatbot/index.html", "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/landing",response_class=HTMLResponse)
+def serve_landing():
+    with open("public/landing/index.html", "r", encoding="utf-8") as f:
         return f.read()
 
 @app.post("/ask", response_model=AskResponse)
